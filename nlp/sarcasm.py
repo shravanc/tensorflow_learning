@@ -1,3 +1,9 @@
+"""
+colab link:
+https://colab.research.google.com/drive/1g0UI66Jbyymvv_-QfVco-6JlW4Cs4ZAV
+"""
+
+
 #Step 1
 #load the data
 
