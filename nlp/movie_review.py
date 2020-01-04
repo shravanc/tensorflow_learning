@@ -53,22 +53,12 @@ model = tf.keras.Sequential([
 ])
 model.summary()
 
+print(training_sentences[0])
+
 model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
 
-print("padded===============")
-print(padded.shape)
-#print(training_labels.shape)
-print(len(padded))
-print(len(training_labels_final))
-
-print("testing=============")
-print(testing_padded.shape)
-#print(testing_labels_final)
-print(len(testing_padded))
-print(len(testing_labels_final))
 num_epochs = 10
 #model.fit(padded, training_labels_final, epochs=num_epochs, validation_data=(testing_padded, testing_labels_final))
-
 
 
 
