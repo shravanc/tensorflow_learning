@@ -1,35 +1,44 @@
-import csv
-
-sentences = []
-labels    = []
-#with open("./data/amazon_cells_labelled.csv") as f:
-with open("./data/data.csv") as f:
-  spamreader = csv.reader(f, delimiter=',')
-  for row in spamreader:
-    sentences.append(row[0])
-    labels.append(int(row[1]))
+"""
+colab link for the same:
+https://colab.research.google.com/drive/1g7OPNFtW-B5bn5Q1seKaZd9bOHgatOWu
+"""
 
 
-training_sentences  = sentences[0:800]
-testing_sentences   = sentences[800:]
+training_sentences = [
+    "I love my dog!",
+    "I love my cat",
+    "you love my dog!",
+    "I love stray dog too, because I had one",
+    "I hate the dogs. They bite",
+    "dogs are dangerous",
+    "dogs are dangerously bad animals",
+    "dogs are adorable, the are lovely",
+    "dogs are irritating"
+]
+# 1 -> pos
+# 0 -> neg
+train_labels = [1, 1, 1, 1, 0,0,0,1,1]
 
-training_labels     = labels[0:800]
-testing_labels      = labels[800:]
+testing_sentences = [
+    "I really love my dog",
+    "my cat is so lovable",
+    "cats are dangerous and dogs bite",
+    "cat is a bad animal"
+]
+test_labels = [1, 1, 0, 0]
 
 import numpy as np
-training_labels_final = np.array(training_labels)
-testing_labels_final  = np.array(testing_labels)
-
-
+training_labels_final = np.array(train_labels)
+testing_labels_final  = np.array(test_labels)
 
 import tensorflow as tf
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
-vocab_size  = 10000
-max_len     = 120
+vocab_size  = 1000
+max_len     = 20
 oov_tok     = "<OOV>"
-embed_dim   = 16
+embed_dim   = 4
 trunc_type  = "post"
 
 tokenizer   = Tokenizer(num_words=vocab_size, oov_token=oov_tok)
@@ -57,7 +66,6 @@ model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"]
 num_epochs = 10
 model.fit(padded, training_labels_final, epochs=num_epochs, validation_data=(testing_padded, testing_labels_final))
 
-
 e = model.layers[0]
 weights = e.get_weights()[0]
 
@@ -66,8 +74,8 @@ import io
 reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
 print(reverse_word_index)
 
-out_v = io.open('./amazon_vecs.tsv', 'w', encoding='utf-8')
-out_m = io.open('./amazon_meta.tsv', 'w', encoding='utf-8')
+out_v = io.open('./exp_vecs.tsv', 'w', encoding='utf-8')
+out_m = io.open('./exp_meta.tsv', 'w', encoding='utf-8')
 for word_num in range(1,len(word_index)):
   word = reverse_word_index[word_num]
   embeddings = weights[word_num]
